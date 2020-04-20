@@ -21,9 +21,13 @@ Set both `AWS_ACCESS_KEY_ID` and `AWS_SECRET_KEY` environment variables.
 
 ## Other variables
 
+Set the source and cache AWS S3 bucket names:
+
 ```
 S3CACHE_BUCKET_NAME=my-cache-bucket
 S3_SOURCE_BUCKET_NAME=my-source-bucket
+LOG_APPLICATION_LEVEL=warn
+HTTP_HTTP2_ENABLED=true
 ```
 
 # Image ID and lookup

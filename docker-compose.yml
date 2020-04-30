@@ -1,0 +1,13 @@
+version: '2.1'
+services:
+
+  web:
+    build: .
+    image: "yalelibraryit/dc-iiif-cantaloupe:latest"
+    env_file:
+      - .env
+    ports:
+      - "8182:8182"
+    stdin_open: true
+    # Enable sending signals (CTRL+C, CTRL+P + CTRL+Q) into the container:
+    tty: true

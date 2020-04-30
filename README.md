@@ -1,4 +1,3 @@
-
 # 🍈 Cantaloupe - Docker image build
 
 Docker build for Cantaloupe IIIF image server.
@@ -7,7 +6,16 @@ Sample URL:
 
 `http://127.0.0.1:8182/iiif/2/1014333/full/512,/0/default.jpg`
 
-# Build an image
+## Use for local development
+
+1. Clone this repo: `git clone git@github.com:yalelibrary/yul-dc-iiif-imageserver.git`
+2. Edit `.env` -- add your AWS credentials and uncomment the block for the Yale or DCE S3 bucket
+3. Build the container: `docker-compose build web`
+4. Run the container: `docker-compose up web`
+
+You should now be able to go to `http://127.0.0.1:8182/iiif/2/1014333/full/512,/0/default.jpg` in your browser and see an image.
+
+## Build an image
 
 ```
 docker image build -t registryaccount/name:tag .
@@ -38,7 +46,7 @@ All image keys are prefixed with `ptiffs`
 
 ## Pairtree
 
-Identifiers are assumed to be numeric OIDs.  Last 2 digits are placed first for randomness.  If the OID is made up of an odd number of digits, the final digit is ignored when constructing the pairtree path.  
+Identifiers are assumed to be numeric OIDs. Last 2 digits are placed first for randomness. If the OID is made up of an odd number of digits, the final digit is ignored when constructing the pairtree path.
 
 For example:
 
@@ -52,5 +60,4 @@ Assumes images are TIFF and end with the `.tif` extension.
 
 # License
 
-Cantaloupe is open-source software distributed under the University of
-Illinois/NCSA Open Source License; see the file LICENSE.txt for terms.
+Cantaloupe is open-source software distributed under the University of Illinois/NCSA Open Source License; see the file LICENSE.txt for terms.

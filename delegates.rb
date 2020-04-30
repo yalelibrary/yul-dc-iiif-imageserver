@@ -219,14 +219,34 @@ class CustomDelegate
   #
   def s3source_object_info(options = {})
     identifier = context['identifier']
-    prefix = identifier[-2..-1]
-    parts = identifier.scan(/../)
-    digest_path_structure = *["ptiffs", prefix, parts, identifier]
     bucket = ENV['S3_SOURCE_BUCKET_NAME']
     info = Hash.new()
     info['bucket'] = bucket
-    info['key'] = digest_path_structure.join('/') + '.tif'
+    info['key'] = image_path
     info
+  end
+
+  # The Yale S3 bucket has images organized into pairtrees, but the DCE folder does not
+  # We need a way to switch between them when we're working.
+  def image_path
+    if ENV['PAIRTREE_PATH']
+      pairtree_path
+    else
+      simple_path
+    end
+  end
+
+  def simple_path
+    identifier = context['identifier']
+    "ptiffs/#{identifier}.tif"
+  end
+
+  def pairtree_path
+    identifier = context['identifier']
+    prefix = identifier[-2..-1]
+    parts = identifier.scan(/../)
+    digest_path_structure = *["ptiffs", prefix, parts, identifier]
+    digest_path_structure.join('/') + '.tif'
   end
 
   ##

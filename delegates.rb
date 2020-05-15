@@ -226,22 +226,8 @@ class CustomDelegate
     info
   end
 
-  # The Yale S3 bucket has images organized into pairtrees, but the DCE folder does not
-  # We need a way to switch between them when we're working.
+  # Use pairtree layout, but the DCE folder does not
   def image_path
-    if ENV['PAIRTREE_PATH']
-      pairtree_path
-    else
-      simple_path
-    end
-  end
-
-  def simple_path
-    identifier = context['identifier']
-    "ptiffs/#{identifier}.tif"
-  end
-
-  def pairtree_path
     identifier = context['identifier']
     prefix = identifier[-2..-1]
     parts = identifier.scan(/../)

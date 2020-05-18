@@ -1,0 +1,51 @@
+{
+    "family": "images",
+    "executionRoleArn": "ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "containerDefinitions": [
+        {
+            "name": "iiif_image",
+            "image": "yalelibraryit/dc-iiif-cantaloupe:latest",
+            "cpu": 512,
+            "memory": 512,
+            "portMappings": [
+                {
+                    "containerPort": 8182,
+                    "hostPort": 8182,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "repositoryCredentials": {
+                "credentialsParameter": "arn:aws:secretsmanager:us-east-1:106281100175:secret:test-docker-cred-UOFcLP"
+            },
+            "environment": [
+                {
+                    "name": "LOG_APPLICATION_LEVEL",
+                    "value": "warn"
+                },
+                {
+                    "name": "HTTP_HTTP2_ENABLED",
+                    "value": "true"
+                },
+                {
+                    "name": "S3CACHE_BUCKET_NAME",
+                    "value": "yale-image-samples/cantaloupe/cache"
+                },
+                {
+                    "name": "S3_SOURCE_BUCKET_NAME",
+                    "value": "yale-image-samples"
+                },
+                {
+                    "name": "PAIRTREE",
+                    "value": "true"
+                }
+            ]
+        }
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "512",
+    "memory": "1024"
+}

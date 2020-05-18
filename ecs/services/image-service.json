@@ -1,0 +1,26 @@
+{
+    "cluster": "dc-fargate-cluster",
+    "serviceName": "images-service",
+    "taskDefinition": "images:1",
+    "launchType": "FARGATE",
+    "loadBalancers": [
+        {
+            "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:106281100175:targetgroup/iiif-images/791663d9bfda84f6",
+            "containerName": "iiif_image",
+            "containerPort": 8182
+        }
+    ],
+    "networkConfiguration": {
+        "awsvpcConfiguration": {
+            "subnets": [
+                "subnet-2dc03400",
+                "subnet-71b55b4d"
+            ],
+            "securityGroups": [
+                "sg-006638282907be35a"
+            ],
+            "assignPublicIp": "DISABLED"
+        }
+    },
+    "desiredCount": 1
+}

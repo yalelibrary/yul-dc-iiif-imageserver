@@ -3,7 +3,7 @@ services:
 
   web:
     build: .
-    image: "yalelibraryit/dc-iiif-cantaloupe:f4dab1"
+    image: "yalelibraryit/dc-iiif-cantaloupe:latest"
     env_file:
       - .env
     ports:

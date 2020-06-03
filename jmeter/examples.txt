@@ -1,0 +1,7 @@
+USERS=5; RAMP=100; LENGTH=200; HEAP="-Xms1g -Xmx10g" jmeter -n -t iiif-test-plan-arbitrary-requests.jmx \
+-l "./results/results-${USERS}-${RAMP}-${LENGTH}.log" -j "./results/logfile-${USERS}-${RAMP}-${LENGTH}.log" 
+-Jusers=$USERS  -Jramp=$RAMP -Jlength=$LENGTH -Jserver=56.211.80.243 -Jport 8182
+
+USERS=50; RAMP=100; LENGTH=200; HEAP="-Xms1g -Xmx10g" jmeter -n -t iiif-test-plan-UV-only.jmx -l "./results/results-${USERS}-${RAMP}-${LENGTH}.log" -j "./results/logfile-${USERS}-${RAMP}-${LENGTH}.log" -Jusers=$USERS -Jramp=$RAMP -Jlength=$LENGTH -Jserver=54.211.80.243 -Jport 8182
+
+USERS=10; RAMP=100; LENGTH=200; HEAP="-Xms1g -Xmx10g" jmeter -n -t iiif-test-plan-UV-only.jmx -l "./results/results-${USERS}-${RAMP}-${LENGTH}.log" -j "./results/logfile-${USERS}-${RAMP}-${LENGTH}.log" -Jusers=$USERS -Jramp=$RAMP -Jlength=$LENGTH -Jserver=54.211.80.243 -Jport 8182

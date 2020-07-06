@@ -10,9 +10,8 @@ VOLUME /imageroot
 RUN apt-get update -qy && apt-get dist-upgrade -qy && \
     apt-get install -qy --no-install-recommends curl imagemagick \
     libopenjp2-tools ffmpeg unzip default-jre-headless && \
-    apt-get -qqy autoremove && apt-get -qqy autoclean && \
     apt-get install -y jruby && \
-    apt-get install sudo
+    apt-get -qqy autoremove && apt-get -qqy autoclean
 
 # Run non privileged
 RUN adduser --system cantaloupe
@@ -22,16 +21,10 @@ RUN /bin/sh -c 'rm -f /cantaloupe/cantaloupe.zip'
 
 ENV BUNDLE_GEMFILE=cantaloupe/Gemfile \
 BUNDLE_JOBS=4
-# RUN jruby -S gem list
-RUN jruby -S gem install bundler
-
-
+RUN gem install bundler
 
 COPY Gemfile* cantaloupe/
 RUN  bash -l -c "bundle check || bundle install"
-# RUN jruby -v
-# RUN bundle info honeybadger
-RUN jruby -S gem list
 
 COPY delegates.rb cantaloupe
 COPY cantaloupe.properties cantaloupe

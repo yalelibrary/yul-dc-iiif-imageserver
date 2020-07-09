@@ -226,7 +226,7 @@ class CustomDelegate
     identifier = context['identifier']
     bucket = ENV['S3_SOURCE_BUCKET_NAME']
     begin
-      fail "test FileNotFoundException"
+      fail "NoSuchFileException"
     rescue => exception
       Honeybadger.notify(exception, {
         error_message: "404 Not Found: #{bucket}/#{image_path}"

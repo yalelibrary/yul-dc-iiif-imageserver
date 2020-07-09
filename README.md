@@ -42,6 +42,8 @@ In the case above, only  yalelibraryit/dc-iiif-cantaloupe:d915b32 will be availa
 
 # Environment variables
 
+These are set the .env file
+
 ## AWS key
 
 Set both `AWS_ACCESS_KEY_ID` and `AWS_SECRET_KEY` environment variables.
@@ -56,6 +58,9 @@ S3_SOURCE_BUCKET_NAME=my-source-bucket
 LOG_APPLICATION_LEVEL=warn
 HTTP_HTTP2_ENABLED=true
 ```
+## Set Honeybadger API key
+
+If you are expanding or otherwise working with Honeybadger in development, set `HONEYBADGER_API_KEY_IMAGESERVER` (project reference in .env example)
 
 # Image ID and lookup
 

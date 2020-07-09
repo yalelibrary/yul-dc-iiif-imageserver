@@ -1,6 +1,7 @@
 FROM openjdk:11 
 
 ENV CANTALOUPE_VERSION=4.1.6
+ENV GEM_PATH=/var/lib/gems/2.5.0:/home/cantaloupe/.gem/ruby/2.5.0:/usr/lib/x86_64-linux-gnu/rubygems-integration/2.5.0:/usr/share/rubygems-integration/2.5.0:/usr/share/rubygems-integration/all
 
 EXPOSE 8182
 
@@ -19,7 +20,7 @@ ADD https://github.com/cantaloupe-project/cantaloupe/releases/download/v${CANTAL
 RUN /bin/sh -c 'unzip -j /cantaloupe/cantaloupe.zip cantaloupe-${CANTALOUPE_VERSION}/cantaloupe-${CANTALOUPE_VERSION}.war -d /cantaloupe'
 RUN /bin/sh -c 'rm -f /cantaloupe/cantaloupe.zip'
 
-ENV BUNDLE_GEMFILE=cantaloupe/Gemfile \
+ENV BUNDLE_GEMFILE=/cantaloupe/Gemfile \
 BUNDLE_JOBS=4
 RUN gem install bundler
 

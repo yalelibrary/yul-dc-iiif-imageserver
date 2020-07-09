@@ -1,6 +1,10 @@
 require 'digest'
 require 'honeybadger'
 
+Honeybadger.configure do |config|
+  config.api_key = ENV['HONEYBADGER_API_KEY_IMAGESERVER']
+end
+
 # Sample Ruby delegate script containing stubs and documentation for all
 # available delegate methods. See the user manual for more information.
 #
@@ -221,6 +225,13 @@ class CustomDelegate
   def s3source_object_info(options = {})
     identifier = context['identifier']
     bucket = ENV['S3_SOURCE_BUCKET_NAME']
+    begin
+      fail "test FileNotFoundException"
+    rescue => exception
+      Honeybadger.notify(exception, {
+        error_message: "404 Not Found: #{bucket}/#{image_path}"
+      })
+    end
     info = Hash.new()
     info['bucket'] = bucket
     info['key'] = image_path

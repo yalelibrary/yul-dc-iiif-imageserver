@@ -25,3 +25,6 @@
 
 .idea
 *.iml
+
+# Ignore .env files
+.env

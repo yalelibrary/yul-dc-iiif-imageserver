@@ -34,10 +34,12 @@ jobs:
       - docker/check
       - docker/pull:
           images: yalelibraryit/dc-iiif-cantaloupe:$CIRCLE_SHA1
+      - run: |
+          echo "export CLEAN_BRANCH=`echo $CIRCLE_BRANCH |sed 's#[^[:alnum:]._-]##g'`" >> $BASH_ENV
       - docker-tag:
           image: yalelibraryit/dc-iiif-cantaloupe
           from_tag: $CIRCLE_SHA1
-          to_tag: $CIRCLE_BRANCH
+          to_tag: $CLEAN_BRANCH
       - docker/push:
           image: yalelibraryit/dc-iiif-cantaloupe
           tag: $CIRCLE_BRANCH

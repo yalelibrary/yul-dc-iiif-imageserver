@@ -42,7 +42,7 @@ jobs:
           to_tag: $CLEAN_BRANCH
       - docker/push:
           image: yalelibraryit/dc-iiif-cantaloupe
-          tag: $CIRCLE_BRANCH
+          tag: $CLEAN_BRANCH
   publish-github-release:
     executor: docker/docker
     steps:

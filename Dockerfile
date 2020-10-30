@@ -36,3 +36,6 @@ RUN mkdir -p /var/log/cantaloupe /var/cache/cantaloupe \
 USER cantaloupe
 WORKDIR /cantaloupe
 CMD ["/bin/sh", "-c",  "java -Dcantaloupe.config=/cantaloupe/cantaloupe.properties -jar /cantaloupe/cantaloupe-$CANTALOUPE_VERSION.war"]
+
+COPY --from=nhd42358.live.dynatrace.com/linux/oneagent-codemodules:all / /
+ENV LD_PRELOAD /opt/dynatrace/oneagent/agent/lib64/liboneagentproc.so

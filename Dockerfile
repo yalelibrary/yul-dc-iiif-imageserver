@@ -8,10 +8,9 @@ EXPOSE 8182
 VOLUME /imageroot
 
 # Update packages and install tools
-RUN apt-get update -qy && apt-get dist-upgrade -qy && \
-    apt-get install -qy --no-install-recommends curl imagemagick \
-    libopenjp2-tools ffmpeg unzip default-jre-headless && \
-    apt-get install -y jruby && \
+RUN apt-get -qq update -y && \
+    apt-get -qq install -y --no-install-recommends curl imagemagick \
+    libopenjp2-tools ffmpeg unzip default-jre-headless jruby && \
     apt-get -qqy autoremove && apt-get -qqy autoclean
 
 # Run non privileged
@@ -35,7 +34,5 @@ RUN mkdir -p /var/log/cantaloupe /var/cache/cantaloupe \
 
 USER cantaloupe
 WORKDIR /cantaloupe
-CMD ["/bin/sh", "-c",  "java -Dcantaloupe.config=/cantaloupe/cantaloupe.properties -jar /cantaloupe/cantaloupe-$CANTALOUPE_VERSION.war"]
-
-COPY --from=nhd42358.live.dynatrace.com/linux/oneagent-codemodules:all / /
-ENV LD_PRELOAD /opt/dynatrace/oneagent/agent/lib64/liboneagentproc.so
+COPY ops/boot.sh /boot.sh
+CMD ["/boot.sh"]

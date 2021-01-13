@@ -34,5 +34,6 @@ RUN mkdir -p /var/log/cantaloupe /var/cache/cantaloupe \
 
 USER cantaloupe
 WORKDIR /cantaloupe
+USER root
 COPY ops/boot.sh /boot.sh
 CMD ["/boot.sh"]

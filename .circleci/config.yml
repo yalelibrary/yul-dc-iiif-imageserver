@@ -17,26 +17,10 @@ commands:
 jobs:
   build-and-push:
     executor: docker/docker
-    parameters:
-      dynatrace-token:
-        default: DYNATRACE_TOKEN
-        type: env_var_name
-      dynatrace-environment-id:
-        default: DYNATRACE_ENVIRONMENT_ID
-        type: env_var_name
-      dynatrace-registry:
-        default: DYNATRACE_REGISTRY
-        type: string
     steps:
       - setup_remote_docker
       - checkout
       - docker/check
-      - run:
-          command: |
-            echo "$<<parameters.dynatrace-token>>" \
-              | docker login -u "$<<parameters.dynatrace-environment-id>>" \
-                  --password-stdin "$<<parameters.dynatrace-registry>>"
-          name: Dynatrace Docker login
       - docker/build:
           image: yalelibraryit/dc-iiif-cantaloupe
           cache_from: yalelibraryit/dc-iiif-cantaloupe:master

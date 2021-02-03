@@ -225,13 +225,6 @@ class CustomDelegate
   def s3source_object_info(options = {})
     identifier = context['identifier']
     bucket = ENV['S3_SOURCE_BUCKET_NAME']
-    begin
-      fail "NoSuchFileException"
-    rescue => exception
-      Honeybadger.notify(exception, {
-        error_message: "404 Not Found: #{bucket}/#{image_path}"
-      })
-    end
     info = Hash.new()
     info['bucket'] = bucket
     info['key'] = image_path

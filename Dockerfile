@@ -30,7 +30,7 @@ COPY cantaloupe.properties cantaloupe
 
 RUN mkdir -p /var/log/cantaloupe /var/cache/cantaloupe \
     && chown -R cantaloupe /cantaloupe /var/log/cantaloupe /var/cache/cantaloupe 
-ENV GEM_HOME=/jruby-9.3.0.0/lib/ruby/gems/shared:$GEM_HOME
+ENV GEM_HOME=/jruby/lib/ruby/gems/shared:$GEM_HOME
 
 USER cantaloupe
 WORKDIR /cantaloupe

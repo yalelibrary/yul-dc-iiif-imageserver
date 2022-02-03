@@ -8,7 +8,7 @@ EXPOSE 8182
 VOLUME /imageroot
 
 # Fix Java DNS TTL
-RUN echo -e "\nnetworkaddress.cache.ttl=120" >> /usr/local/openjdk-11/conf/security/java.security
+RUN echo "\nnetworkaddress.cache.ttl=120" >> /usr/local/openjdk-11/conf/security/java.security
 
 # Update packages and install tools
 RUN apt-get -qq update -y && \

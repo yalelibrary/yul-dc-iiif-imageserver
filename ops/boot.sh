@@ -4,5 +4,5 @@ if [ ! -z "$DYNATRACE_TOKEN" ];then
 
   /bin/sh installer.sh --set-app-log-content-access=true --set-infra-only=true --set-host-group=DC --set-host-name=${CLUSTER_NAME}-iiif-image NON_ROOT_MODE=0 2>&1 & 
 fi
-su cantaloupe -s /bin/sh /bin/sh -c  'GEM_PATH=/jruby/lib/ruby/gems/shared java -Dcantaloupe.config=/cantaloupe/cantaloupe.properties ${JAVA_OPTS} -jar /cantaloupe/cantaloupe-$CANTALOUPE_VERSION.war'
+su cantaloupe -s /bin/sh /bin/sh -c  "GEM_PATH=/jruby/lib/ruby/gems/shared java -Dcantaloupe.config=/cantaloupe/cantaloupe.properties ${IIIF_JAVA_OPTS} -jar /cantaloupe/cantaloupe-$CANTALOUPE_VERSION.war"
 

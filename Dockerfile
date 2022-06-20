@@ -27,14 +27,6 @@ ENV PATH="/jruby/bin:${PATH}"
 RUN adduser --system cantaloupe
 
 # Get and unpack Cantaloupe release archive
-# ADD https://github.com/cantaloupe-project/cantaloupe/releases/download/v${CANTALOUPE_VERSION}/cantaloupe-${CANTALOUPE_VERSION}.zip /cantaloupe/cantaloupe.zip
-# RUN /bin/sh -cp 'unzip -j /cantaloupe/cantaloupe.zip cantaloupe-${CANTALOUPE_VERSION}/cantaloupe-${CANTALOUPE_VERSION}.jar -d /cantaloupe'
-# RUN /bin/sh -c 'rm -f /cantaloupe/cantaloupe.zip'
-# COPY delegates.rb cantaloupe
-# COPY cantaloupe.properties cantaloupe
-# RUN mkdir -p /var/log/cantaloupe /var/cache/cantaloupe \
-#     && chown -R cantaloupe /cantaloupe /var/log/cantaloupe /var/cache/cantaloupe 
-
 RUN curl --silent --fail -OL https://github.com/cantaloupe-project/cantaloupe/releases/download/v${CANTALOUPE_VERSION}/cantaloupe-${CANTALOUPE_VERSION}.zip \
   && unzip cantaloupe-${CANTALOUPE_VERSION}.zip \
   && ln -s cantaloupe-${CANTALOUPE_VERSION} cantaloupe \

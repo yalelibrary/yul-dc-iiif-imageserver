@@ -1,5 +1,226 @@
 # Change Log
 
+## 5.0.5
+
+* Fixed an uncaught exception when returning HTTP 401 status from the
+  `pre_authorize()` or `authorize()` delegate methods.
+* Updated the Logback dependency to version 1.2.8.
+
+## 5.0.4
+
+* Fixed a bug involving deserialization of BYTE-type EXIF fields containing
+  numeric values.
+* Fixed a bug in S3Cache that could cause source content to be purged when 
+  sharing a bucket with S3Source with the cache worker enabled.
+
+## 5.0.3
+
+* The `full_size` and `metadata` keys are available in the delegate context
+  in response to information requests as well as image requests.
+* The application exits when it fails to bind to a port at startup.
+* Improved recovery from corrupt cached infos.
+* Suppressed an error-level log message from OpenJpegProcessor when reading
+  an image without a recognized filename extension on a read-only filesystem.
+* Improved the resiliency of the built-in EXIF reader.
+* Fixed IIIF Image API image and information endpoints not respecting scale
+  constraints.
+* Fixed the IIIF Image API v2 and v3 image endpoints not sending a `Link`
+  header in response to requests for cached images.
+* Fixed HttpSource failing to use HTTP Basic credentials when chunking is
+  enabled.
+* Fixed a potential ConcurrentModificationException when using the delegate
+  script.
+* Updated JRuby to version 9.2.17.0.
+
+## 5.0.2
+
+* Fixed a bug introduced in 5.0.1 that broke static asset serving.
+
+## 5.0.1
+
+* Fixed several issues related to serving static assets from within the JAR.
+* Added several keys to the status endpoint response (`/status`).
+* Fixed a bug in the IIIF Image API 2 & 3 endpoints that caused the
+  `profile.formats` key to be missing from the information responses of cached
+  images.
+* Fixed the `page_count` key not being set in the delegate context when
+  returning a cached info.
+* Fixed several issues related to EXIF metadata parsing.
+* Fixed a floating-point rounding bug that could cause an excessively large
+  TIFF pyramid level to be selected, resulting in unnecessary scaling.
+* Fixed a bug in TurboJpegProcessor that could cause incorrect cropping.
+* Fixed a bug in S3Cache that could cause hits against expired content.
+* Fixed a bug that could cause S3 credentials from the configuration file to be
+  erroneously used even when not set.
+* Fixed a bug that could cause corrupt image data to be written to a derivative
+  cache.
+* Updated the PDFBox dependency to address the following security
+  vulnerabilities: CVE-2021-27807, CVE-2021-27906.
+
+## 5.0
+
+### Endpoints
+
+* Added an endpoint supporting the IIIF Image API version 3.0 at `/iiif/3`.
+* When an image requested at `max` size is larger than the value of the
+  `max_pixels` configuration key, it is downscaled to that value instead of the
+  request being forbidden. This behavior aligns more closely with the IIIF
+  Image API.
+* The minimum and maximum size of the built-in web server's thread pool is
+  configurable.
+* Added a configuration option to control whether the health check includes
+  dependent sources and caches.
+* A `cache=recache` URL query argument is available that reprocesses and
+  recaches the derivative image before delivering it.
+* The `X-IIIF-ID` reverse proxy header is no longer supported. `X-Forwarded-ID`
+  should be used instead.
+* The `response-content-disposition` URL query argument supports RFC 6266
+  Unicode filename syntax.
+* The `endpoint.iiif.content_disposition` configuration key has been removed.
+  The `response-content-disposition` URL query argument should be used instead.
+* The `http.http2.enabled` and `https.http2.enabled` configuration keys have
+  been removed. HTTP/2 is always enabled.
+* The identifier path component of IIIF Image API URIs may contain a
+  "meta-identifier," which is comprised of an identifier plus other relevant
+  information like a page number and/or scale constraint.
+* The `page` and `time` query arguments have been deprecated in favor of the
+  meta-identifier-expressed page number explained above.
+* Added a `log_error_responses` configuration key that causes all errors at all
+  endpoints to be logged, which may help to track down errors that evade
+  logging elsewhere.
+
+### Sources
+
+* Sources support inconsistencies between filename/identifier extensions and
+  byte signatures.
+* HttpSource uses the OkHttp HTTP client library instead of Jetty.
+* HttpSource supports HTTP/2.
+* S3Source uses version 2 of the AWS SDK insead of MinIO.
+
+### Processors
+
+* ImageMagickProcessor, GraphicsMagickProcessor, and KakaduDemoProcessor have
+  been removed.
+* Added GrokProcessor. (Thanks to @boxerab)
+* Java2dProcessor supports multi-page TIFFs.
+* The metadata-handling system has been redesigned:
+    * Source image metadata is cached in derivative caches.
+    * XMP metadata can be copied or edited using a delegate method.
+    * The `processor.metadata.respect_orientation` configuration key has been
+      removed and EXIF Orientation values are always respected.
+* KakaduNativeProcessor, OpenJpegProcessor, and TurboJpegProcessor respect the
+  EXIF `Orientation` tag.
+* KakaduNativeProcessor, OpenJpegProcessor, and TurboJpegProcessor support
+  EXIF, IPTC IIM, and XMP metadata.
+* Java2dProcessor supports the XPM source format.
+* Added a `processor.downscale_linear` configuration key to enable downscaling
+  in a linear color space.
+* TurboJpegProcessor decompresses with "accurate" rather than "fast" DCT.
+* FfmpegProcessor, KakaduNativeProcessor, OpenJpegProcessor, and
+  PdfBoxProcessor use libjpeg-turbo to write JPEGs if it is available.
+* Added the `scaled` position for image overlays.
+* Updated the included Kakadu library used by KakaduNativeProcessor to version
+  8.0.3.
+* Updated Apache PDFBox to version 2.0.22.
+* PdfBoxProcessor properties added to better control memory
+    * `processor.pdf.scratch_file_enabled` allows use of a scratch file
+    * `processor.pdf.max_memory_bytes` allows control over how much memory a PDF thread consumes (-1 means unlimited)
+
+### Caches
+
+* S3Cache has been updated to use version 2 of the AWS SDK.
+* RedisCache has been updated to use version 6.0.1 of the Lettuce client.
+* The delegate method invocation cache has been removed. 
+
+### Delegate Script
+
+* A delegate class can be written in Java. See the user manual for more
+  information.
+* Added a `pre_authorize()` delegate method that enables more efficient,
+  "fail-fast" authorization.
+* Added `local_uri` and `page_count` keys to the delegate script context.
+* Corrected the structure of the `cookie` key in the delegate script context.
+  See the upgrade guide for more information.
+* Updated JRuby to version 9.2.13.0.
+
+### Other
+
+* The application is now packaged as a JAR file and can no longer work in a
+  Servlet container. (See
+  [#339](https://github.com/cantaloupe-project/cantaloupe/issues/339) for
+  background.)
+* Java 11 is required.
+* Added configuration options for logging in Logstash format. (Thanks to
+  @cmhdave)
+* The `redaction.enabled` configuration key has been removed. The `redaction()`
+  delegate method is always called and redactions are always applied if it
+  returns any.
+* The `overlay()` delegate method may return a boolean `word_wrap` key value
+  to enable automatic wrapping of overlay strings.
+* The `-Dcantaloupe.list_fonts` VM argument has been replaced with the
+  `-list-fonts` command-line argument.
+
+## 4.1.11
+
+* Fixed an issue with the 4.1.10 build whereby the logback-classic dependency
+  had been updated to version 1.2.8 but not logback-core.
+
+## 4.1.10
+
+* Fixed the IIIF Image API v2 image endpoint not sending a `Link` header in
+  response to requests for cached images.
+* Suppressed an error-level log message from OpenJpegProcessor when reading
+  an image without a recognized filename extension on a read-only filesystem.
+* Updated the Logback dependency to version 1.2.8.
+
+## 4.1.9
+
+* The identifier scale constraint suffix syntax is configurable via new
+  `scale_constraint_suffix.format` and `scale_constraint_suffix.pattern`
+  keys. (These are a stopgap addition that are not relevant in version 5.0.)
+* Fixed a floating-point rounding bug that could cause an excessively large
+  TIFF pyramid level to be selected, resulting in unnecessary scaling.
+* Fixed a bug that could cause corrupt image data to be written to a derivative
+  cache.
+* Updated the PDFBox dependency to address the following security
+  vulnerability: CVE-2021-27807, CVE-2021-27906.
+
+## 4.1.8
+
+* Fixed a rounding bug that could cause requests for certain scale-constrained
+  images to return HTTP 403 status.
+* Fixed a potential NullPointerException from Java2dProcessor when the
+  `processor.metadata.respect_orientation` configuration key is set to `true`.
+* Improved TurboJpegProcessor's ability to partially decode corrupt source
+  images.
+* Improve the efficiency of the health check endpoint.
+
+## 4.1.7
+
+* Fixed a sporadic JVM crash when using KakaduNativeProcessor under load with a
+  derivative cache enabled.
+* Fixed incorrect success status in response to image requests that have failed
+  with a VM error.
+* Fixed a `NumberFormatException` caused by incorrect Java version parsing when
+  running in a beta or early-access JVM.
+* Fixed an `IOException` appearing in the log at the conclusion of a successful
+  request involving HttpSource when chunking is enabled.
+* Fixed a `NullPointerException` when returning `nil` from the `overlay()`
+  delegate method. (Thanks to @ccare)
+* Fixed an error from the embedded Jetty server when trying to use a key store
+  with multiple certificates.
+
+## 4.1.6
+
+* Image information is no longer included in IIIF information responses with
+  an HTTP 403 status.
+* Fixed overridden boolean values not being recognized in inherited
+  configuration files.
+* Fixed information responses failing to respect the `page` URL query argument.
+* Fixed a bug that caused requests for data beyond an offset of 2^31 from
+  S3Source and AzureStorageSource to fail when chunking is enabled.
+* Updated JRuby to version 9.2.11.1, which addresses multiple CVEs.
+* Updated Jackson to version 2.11.0, which addresses multiple CVEs.
 ## 4.1.5
 
 * Fixed the IIIF Image API 2.x endpoint's handling of identifiers containing

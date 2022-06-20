@@ -13,8 +13,7 @@ end
 # to be thread-safe, but sharing information across instances (requests)
 # **does** need to be done thread-safely.
 #
-# This version of the script works with Cantaloupe version 4, and not earlier
-# versions.
+# This version of the script works with Cantaloupe version >= 5.
 #
 class CustomDelegate
 
@@ -33,25 +32,27 @@ class CustomDelegate
   #
   # * `client_ip`        [String] Client IP address.
   # * `cookies`          [Hash<String,String>] Hash of cookie name-value pairs.
+  # * `full_size`        [Hash<String,Integer>] Hash with `width` and `height`
+  #                      keys corresponding to the pixel dimensions of the
+  #                      source image.
   # * `identifier`       [String] Image identifier.
-  # * `request_headers`  [Hash<String,String>] Hash of header name-value pairs.
-  # * `request_uri`      [String] URI requested by the client.
   # * `local_uri`        [String] URI seen by the application, which may be
   #                      different from `request_uri` when operating behind a
   #                      reverse-proxy server.
+  # * `metadata`         [Hash<String,Object>] Embedded image metadata. Object
+  #                      structure varies depending on the source image.
+  #                      See the `metadata()` method.
+  # * `page_count`       [Integer] Page count.
+  # * `page_number`      [Integer] Page number.
+  # * `request_headers`  [Hash<String,String>] Hash of header name-value pairs.
+  # * `request_uri`      [String] URI requested by the client.
   # * `scale_constraint` [Array<Integer>] Two-element array with scale
   #                      constraint numerator at position 0 and denominator at
   #                      position 1.
   #
   # It will contain the following additional string keys in response to image
-  # requests:
+  # requests, after the image has been accessed:
   #
-  # * `full_size`      [Hash<String,Integer>] Hash with `width` and `height`
-  #                    keys corresponding to the pixel dimensions of the
-  #                    source image.
-  # * `metadata`       [Hash<String,Object>] Embedded image metadata. Object
-  #                    structure varies depending on the source image.
-  #                    See the `metadata()` method.
   # * `operations`     [Array<Hash<String,Object>>] Array of operations in
   #                    order of application. Only operations that are not
   #                    no-ops will be included. Every hash contains a `class`
@@ -68,8 +69,52 @@ class CustomDelegate
   attr_accessor :context
 
   ##
-  # Returns authorization status for the current request. Will be called upon
-  # all requests to all public endpoints.
+  # Deserializes the given meta-identifier string into a hash of its component
+  # parts.
+  #
+  # This method is used only when the `meta_identifier.transformer`
+  # configuration key is set to `DelegateMetaIdentifierTransformer`.
+  #
+  # The hash contains the following keys:
+  #
+  # * `identifier`       [String] Required.
+  # * `page_number`      [Integer] Optional.
+  # * `scale_constraint` [Array<Integer>] Two-element array with scale
+  #                      constraint numerator at position 0 and denominator at
+  #                      position 1. Optional.
+  #
+  # @param meta_identifier [String]
+  # @return Hash<String,Object> See above. The return value should be
+  #                             compatible with the argument to
+  #                             {serialize_meta_identifier}.
+  #
+  def deserialize_meta_identifier(meta_identifier)
+  end
+
+  ##
+  # Serializes the given meta-identifier hash.
+  #
+  # This method is used only when the `meta_identifier.transformer`
+  # configuration key is set to `DelegateMetaIdentifierTransformer`.
+  #
+  # See {deserialize_meta_identifier} for a description of the hash structure.
+  #
+  # @param components [Hash<String,Object>]
+  # @return [String] Serialized meta-identifier compatible with the argument to
+  #                  {deserialize_meta_identifier}.
+  #
+  def serialize_meta_identifier(components)
+  end
+
+  ##
+  # Returns authorization status for the current request. This method is called
+  # upon all requests to all public endpoints early in the request cycle,
+  # before the image has been accessed. This means that some context keys (like
+  # `full_size`) will not be available yet.
+  #
+  # This method should implement all possible authorization logic except that
+  # which requires any of the context keys that aren't yet available. This will
+  # ensure efficient authorization failures.
   #
   # Implementations should assume that the underlying resource is available,
   # and not try to check for it.
@@ -95,8 +140,29 @@ class CustomDelegate
   # @param options [Hash] Empty hash.
   # @return [Boolean,Hash<String,Object>] See above.
   #
-  def authorize(options = {})
+  def pre_authorize(options = {})
     true
+  end
+
+  ##
+  # Returns authorization status for the current request. Will be called upon
+  # all requests to all public image (not information) endpoints.
+  #
+  # This is a counterpart of `pre_authorize()` that is invoked later in the
+  # request cycle, once more information about the underlying image has become
+  # available. It should only contain logic that depends on context keys that
+  # contain information about the source image (like `full_size`, `metadata`,
+  # etc.)
+  #
+  # Implementations should assume that the underlying resource is available,
+  # and not try to check for it.
+  #
+  # @param options [Hash] Empty hash.
+  # @return [Boolean,Hash<String,Object>] See the documentation of
+  #                                       `pre_authorize()`.
+  #
+  def authorize(options = {})
+    pre_authorize
   end
 
   ##
@@ -127,6 +193,19 @@ class CustomDelegate
   end
 
   def extra_iiif2_information_response_keys(options = {})
+    {}
+  end
+
+  ##
+  # Adds additional keys to an Image API 3.x information response. See the
+  # [IIIF Image API 3.0](http://iiif.io/api/image/3.0/#image-information)
+  # specification and "endpoints" section of the user manual.
+  #
+  # @param options [Hash] Empty hash.
+  # @return [Hash] Hash to merge into an Image API 3.x information response.
+  #                Return an empty hash to add nothing.
+  #
+  def extra_iiif3_information_response_keys(options = {})
     {}
   end
 

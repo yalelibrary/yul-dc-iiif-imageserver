@@ -3,6 +3,101 @@
 If you are skipping versions, work through these sections backwards from your
 current version.
 
+## 4.1.x → 5.0
+
+1.  Note that the application is now packaged as a JAR file which can no longer
+    run in a Servlet container.
+2.  Note that Java 11 or later is now required.
+3.  Add the following keys from the sample configuration:
+    * `http.min_threads`
+    * `http.max_threads`
+    * `log_error_responses`
+    * `meta_identifier.*`
+    * `endpoint.iiif.3.enabled`
+    * `endpoint.health.dependency_check`
+    * `S3Source.region`
+        * If you had set `S3Source.endpoint` to an AWS endpoint, unset that and
+          set this key to your AWS region instead.
+    * `processor.ManualSelectionStrategy.xpm`
+    * `processor.downscale_linear`
+    * `processor.imageio.xpm.reader`
+    * `GrokProcessor.path_to_binaries`
+    * `processor.pdf.*`
+    * `S3Cache.region`
+        * If you had set `S3Cache.endpoint` to an AWS endpoint, unset that and
+          set this key to your AWS region instead.
+    * `log.application.ConsoleAppender.logstash.enabled`
+    * `log.application.FileAppender.logstash.enabled`
+    * `log.application.RollingFileAppender.logstash.enabled`
+    * `log.error.FileAppender.logstash.enabled`
+    * `log.error.RollingFileAppender.logstash.enabled`
+4.  Remove the following configuration keys:
+    * `http.http2.enabled`
+    * `https.http2.enabled`
+    * `scale_constraint_suffix.pattern`
+    * `scale_constraint_suffix.format`
+    * `endpoint.iiif.content_disposition`
+    * `delegate_script.cache.enabled`
+    * `processor.metadata.*`
+    * `GraphicsMagickProcessor.path_to_binaries`
+    * `KakaduDemoProcessor.path_to_binaries`
+    * `ImageMagickProcessor.path_to_binaries`
+    * `S3Cache.max_connections`
+    * `redaction.enabled`
+5.  Rename the following configuration keys:
+    * `endpoint.iiif.2.restrict_to_sizes` to `endpoint.iiif.restrict_to_sizes`
+    * `overlays.enabled` to `overlays.BasicStrategy.enabled`
+6.  Add the following methods from the sample delegate script:
+    * `deserialize_meta_identifier()`
+    * `serialize_meta_identifier()`
+    * `pre_authorize()`
+    * `extra_iiif3_information_response_keys()`
+    * `metadata()`
+7.  Note that the `pre_authorize()` delegate method added in step 6 may require
+    refactoring the logic in `authorize()`. See the documentation of those
+    methods for more information.
+8.  In your delegate script, change any references to
+   `edu.illinois.library.cantaloupe.script.Logger` to
+   `edu.illinois.library.cantaloupe.delegate.Logger`.
+9.  The `X-IIIF-ID` reverse proxy header is no longer supported. Use
+    `X-Forwarded-ID` instead.
+10. If you were using the `processor.metadata.preserve` key, you will need to
+    use the new `metadata()` delegate method instead.
+11. If you were using the `cookie` key in the delegate script context hash,
+    note that its structure has changed to a hash of cookie name-value pairs.
+    This is how it was documented to work, and how it was supposed to work, in
+    previous versions.
+12. Note that the default scale constraint delimiter has changed from a dash
+    (`-`) to a semicolon (`;`). If you were using scale constraints in URI
+    identifiers (e.g. `image.jpg-1:2`), and want to avoid breaking those URIs,
+    you must change the value of
+    `meta_identifier.transformer.StandardMetaIdentifierTransformer.delimiter`
+    to `-`.
+13. Note that the `page` URI query argument has been deprecated and will be
+    removed in a future version. A page argument should instead be expressed in
+    the identifier path component. For example, if
+    `meta_identifier.transformer` is set to
+    `StandardMetaIdentifierTransformer`, and the desired page is `3`, the new
+    identifier would be: `image.jpg;3`.
+14. Similar to above, the `time` URI query argument has been deprecated. A time
+    argument should instead be expressed in the identifier path component as
+    above, as an integer number of seconds rather than an `HH:MM::SS` string.
+15. The source known as HttpSource2 from version 4.1.x is now known as
+    HttpSource, and the old HttpSource has been removed. If you encounter
+    errors from the new HttpSource like "PKIX path building failed," consult
+    the HttpSource section of the user manual.
+16. If you are using KakaduNativeProcessor, you must install the updated Kakadu
+    shared library, contained in the `deps` folder.
+17. KakaduDemoProcessor is no longer available. If you were using it, you must
+    switch to either KakaduNativeProcessor, OpenJpegProcessor, or
+    GrokProcessor.
+18. If you are using a derivative cache, and are serving any images that have
+    non-zero orientations, or embedded metadata with which you might want to
+    use the new `metadata()` delegate method, you must purge all cached infos.
+    Unfortunately there is no API method to do this yet, so this will require
+    either deleting all `.json` files/objects manually, or else purging the
+    whole cache (manually or via the API).
+
 ## 4.0.x → 4.1
 
 1. Rename the following configuration keys:

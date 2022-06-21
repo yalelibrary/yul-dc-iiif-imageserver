@@ -3,7 +3,7 @@ TAG    := $$(git log -1 --pretty=%h)
 IMG    := ${NAME}:${TAG}
  
 build:
-	@docker-compose build web
+	@cam build iiif_image
 	@docker tag  ${NAME}:latest ${IMG}
  
 push:

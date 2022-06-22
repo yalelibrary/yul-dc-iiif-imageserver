@@ -10,16 +10,14 @@ Sample URL:
 
 1. Clone this repo: `git clone git@github.com:yalelibrary/yul-dc-iiif-imageserver.git`
 2. Edit `.env` -- add your AWS credentials and uncomment the block for the Yale or DCE S3 bucket
-3. Build the container: `docker-compose build web`
-4. Run the container: `docker-compose up web`
+3. Build the container: `cam build iiif_image`
+4. Run the container: `cam up iiif_image`
 
 You should now be able to go to `http://127.0.0.1:8182/iiif/2/1014333/full/512,/0/default.jpg` in your browser and see an image.
 
 ## Build an image
 
-```
-docker image build -t registryaccount/name:tag .
-```
+Build the container: `cam build iiif_image`
 ### Using the Makefile
 
 You can also use the Makefile to build an image locally, and/or push it to dockerhub:

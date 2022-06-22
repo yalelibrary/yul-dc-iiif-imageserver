@@ -1,5 +1,66 @@
 # Change Log
 
+## 4.1.11
+
+* Fixed an issue with the 4.1.10 build whereby the logback-classic dependency
+  had been updated to version 1.2.8 but not logback-core.
+
+## 4.1.10
+
+* Fixed a `Link` header not being sent in response to requests for cached
+  images.
+* Suppressed an error-level log message from OpenJpegProcessor when reading
+  an image without a recognized filename extension on a read-only filesystem.
+* Updated the Logback dependency to version 1.2.8.
+
+## 4.1.9
+
+* The identifier scale constraint suffix syntax is configurable via new
+  `scale_constraint_suffix.format` and `scale_constraint_suffix.pattern`
+  keys. (These are a stopgap addition that are not relevant in version 5.0.)
+* Fixed a floating-point rounding bug that could cause an excessively large
+  TIFF pyramid level to be selected, resulting in unnecessary scaling.
+* Fixed a bug whereby corrupt image data could be written to a derivative
+  cache.
+* Updated the PDFBox dependency to address the following security
+  vulnerability: CVE-2021-27807, CVE-2021-27906.
+
+## 4.1.8
+
+* Fixed a rounding bug that could cause requests for certain scale-constrained
+  images to return HTTP 403 status.
+* Fixed a potential NullPointerException from Java2dProcessor when the
+  `processor.metadata.respect_orientation` configuration key is set to `true`.
+* Improved TurboJpegProcessor's ability to partially decode corrupt source
+  images.
+* Improve the efficiency of the health check endpoint.
+
+## 4.1.7
+
+* Fixed a sporadic JVM crash when using KakaduNativeProcessor under load with a
+  derivative cache enabled.
+* Fixed incorrect success status in response to image requests that have failed
+  with a VM error.
+* Fixed a `NumberFormatException` caused by incorrect Java version parsing when
+  running in a beta or early-access JVM.
+* Fixed an `IOException` appearing in the log at the conclusion of a successful
+  request involving HttpSource when chunking is enabled.
+* Fixed a `NullPointerException` when returning `nil` from the `overlay()`
+  delegate method. (Thanks to @ccare)
+* Fixed an error from the embedded Jetty server when trying to use a key store
+  with multiple certificates.
+
+## 4.1.6
+
+* Image information is no longer included in IIIF information responses with
+  an HTTP 403 status.
+* Fixed overridden boolean values not being recognized in inherited
+  configuration files.
+* Fixed information responses failing to respect the `page` URL query argument.
+* Fixed a bug that caused requests for data beyond an offset of 2^31 from
+  S3Source and AzureStorageSource to fail when chunking is enabled.
+* Updated JRuby to version 9.2.11.1, which addresses multiple CVEs.
+* Updated Jackson to version 2.11.0, which addresses multiple CVEs.
 ## 4.1.5
 
 * Fixed the IIIF Image API 2.x endpoint's handling of identifiers containing

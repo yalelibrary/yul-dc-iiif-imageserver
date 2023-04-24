@@ -3,6 +3,8 @@ require 'honeybadger'
 
 Honeybadger.configure do |config|
   config.api_key = ENV['HONEYBADGER_API_KEY_IMAGESERVER']
+  config.env = ENV['CLUSTER_NAME']
+  config.development_environments = %w[test development cucumber local]
 end
 
 # Sample Ruby delegate script containing stubs and documentation for all

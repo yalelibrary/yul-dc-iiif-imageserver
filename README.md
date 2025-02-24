@@ -20,7 +20,7 @@ You should now be able to go to `http://127.0.0.1:8182/iiif/2/1014333/full/512,/
 Build the container: `cam build iiif_image`
 ### Using the Makefile
 
-You can also use the Makefile to build an image locally, and/or push it to dockerhub:
+You can also use the Makefile to build an image locally, and/or push it to dockerhub
 
 ```
 make build <- build the cantaloupe image

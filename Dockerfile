@@ -24,7 +24,7 @@ ENV PATH="/jruby/ruby/gems/shared/gems/bundler-2.2.14/exe:${PATH}"
 ENV PATH="/jruby/bin:${PATH}"
 # Run non privileged
 RUN adduser --system cantaloupe
-ADD https://github.com/K8Sewell/cantaloupe/archive/refs/tags/v${CANTALOUPE_VERSION}.zip /cantaloupe/cantaloupe.zip
+ADD https://github.com/cantaloupe-project/cantaloupe/releases/download/v${CANTALOUPE_VERSION}/cantaloupe-${CANTALOUPE_VERSION}.zip /cantaloupe/cantaloupe.zip
 RUN /bin/sh -c 'unzip -j /cantaloupe/cantaloupe.zip cantaloupe-${CANTALOUPE_VERSION}/cantaloupe-${CANTALOUPE_VERSION}.jar -d /cantaloupe'
 RUN /bin/sh -c 'rm -f /cantaloupe/cantaloupe.zip'
 RUN gem install --no-doc honeybadger

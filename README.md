@@ -9,7 +9,7 @@ Sample URL:
 ## Use for local development
 
 1. Clone this repo: `git clone git@github.com:yalelibrary/yul-dc-iiif-imageserver.git`
-2. Edit `.env` -- add your AWS credentials and uncomment the block for the Yale or DCE S3 bucket
+2. Edit `.env` -- add your AWS credentials and uncomment the block for the Yale or DCE S3 bucket.
 3. Build the container: `cam build iiif_image`
 4. Run the container: `cam up iiif_image`
 

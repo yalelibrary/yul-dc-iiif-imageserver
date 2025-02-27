@@ -18,6 +18,7 @@ You should now be able to go to `http://127.0.0.1:8182/iiif/2/1014333/full/512,/
 ## Build an image
 
 Build the container: `cam build iiif_image`
+
 ### Using the Makefile
 
 You can also use the Makefile to build an image locally, and/or push it to dockerhub:
@@ -38,9 +39,23 @@ yalelibraryit/dc-iiif-cantaloupe        latest              1c2d8977cf5b
 In the case above, only  yalelibraryit/dc-iiif-cantaloupe:d915b32 will be available on dockerhub.
 
 
+# Cutting Releases
+
+Releases can be done through camerata or a combination of Docker Hub and GitHub UI.  For details on camerata please see that README.  To cut a release via Docker Hub and GitHub one needs to build the image locally, name and tag the image, push tagged image to Docker Hub, and then use releases workflow in GitHub.
+
+```
+
+docker push yalelibraryit/dc-iiif-cantaloupe:v1.0.2 <----- pushes up to docker hub
+
+docker tag yalelibraryit/iiif_image:v1.0.5 yalelibraryit/iiif_image:latest  <----- tags to latest
+
+docker tag yalelibraryit/dc-blacklight:DownloadOriginalFeature docker.io/yalelibraryit/dc-blacklight:DownloadOriginalFeature <----- tags a branch
+
+```
+
 # Environment variables
 
-These are set the .env file
+These are set the .env file and in AWS
 
 ## AWS key
 

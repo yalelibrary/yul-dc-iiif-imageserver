@@ -59,7 +59,7 @@ These are set the .env file and in AWS
 
 ## AWS key
 
-Set both `AWS_ACCESS_KEY_ID` and `AWS_SECRET_KEY` environment variables.
+Set both `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables.
 
 ## Other variables
 

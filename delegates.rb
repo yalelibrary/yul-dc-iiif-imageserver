@@ -69,9 +69,53 @@ class CustomDelegate
   #
   attr_accessor :context
 
+    ##
+  # Deserializes the given meta-identifier string into a hash of its component
+  # parts.
+  #
+  # This method is used only when the `meta_identifier.transformer`
+  # configuration key is set to `DelegateMetaIdentifierTransformer`.
+  #
+  # The hash contains the following keys:
+  #
+  # * `identifier`       [String] Required.
+  # * `page_number`      [Integer] Optional.
+  # * `scale_constraint` [Array<Integer>] Two-element array with scale
+  #                      constraint numerator at position 0 and denominator at
+  #                      position 1. Optional.
+  #
+  # @param meta_identifier [String]
+  # @return Hash<String,Object> See above. The return value should be
+  #                             compatible with the argument to
+  #                             {serialize_meta_identifier}.
+  #
+  def deserialize_meta_identifier(meta_identifier)
+  end
+
+    ##
+  # Serializes the given meta-identifier hash.
+  #
+  # This method is used only when the `meta_identifier.transformer`
+  # configuration key is set to `DelegateMetaIdentifierTransformer`.
+  #
+  # See {deserialize_meta_identifier} for a description of the hash structure.
+  #
+  # @param components [Hash<String,Object>]
+  # @return [String] Serialized meta-identifier compatible with the argument to
+  #                  {deserialize_meta_identifier}.
+  #
+  def serialize_meta_identifier(components)
+  end
+
   ##
-  # Returns authorization status for the current request. Will be called upon
-  # all requests to all public endpoints.
+  # Returns authorization status for the current request. This method is called
+  # upon all requests to all public endpoints early in the request cycle,
+  # before the image has been accessed. This means that some context keys (like
+  # `full_size`) will not be available yet.
+  #
+  # This method should implement all possible authorization logic except that
+  # which requires any of the context keys that aren't yet available. This will
+  # ensure efficient authorization failures.
   #
   # Implementations should assume that the underlying resource is available,
   # and not try to check for it.
@@ -96,6 +140,27 @@ class CustomDelegate
   #
   # @param options [Hash] Empty hash.
   # @return [Boolean,Hash<String,Object>] See above.
+  #
+  def pre_authorize(options = {})
+    true
+  end
+
+  ##
+  # Returns authorization status for the current request. Will be called upon
+  # all requests to all public image (not information) endpoints.
+  #
+  # This is a counterpart of `pre_authorize()` that is invoked later in the
+  # request cycle, once more information about the underlying image has become
+  # available. It should only contain logic that depends on context keys that
+  # contain information about the source image (like `full_size`, `metadata`,
+  # etc.)
+  #
+  # Implementations should assume that the underlying resource is available,
+  # and not try to check for it.
+  #
+  # @param options [Hash] Empty hash.
+  # @return [Boolean,Hash<String,Object>] See the documentation of
+  #                                       `pre_authorize()`.
   #
   def authorize(options = {})
     true
@@ -128,7 +193,29 @@ class CustomDelegate
     {}
   end
 
+  ##
+  # Adds additional keys to an Image API 2.x information response. See the
+  # [IIIF Image API 2.1](http://iiif.io/api/image/2.1/#image-information)
+  # specification and "endpoints" section of the user manual.
+  #
+  # @param options [Hash] Empty hash.
+  # @return [Hash] Hash to merge into an Image API 2.x information response.
+  #                Return an empty hash to add nothing.
+  #
   def extra_iiif2_information_response_keys(options = {})
+    {}
+  end
+
+  ##
+  # Adds additional keys to an Image API 3.x information response. See the
+  # [IIIF Image API 3.0](http://iiif.io/api/image/3.0/#image-information)
+  # specification and "endpoints" section of the user manual.
+  #
+  # @param options [Hash] Empty hash.
+  # @return [Hash] Hash to merge into an Image API 3.x information response.
+  #                Return an empty hash to add nothing.
+  #
+  def extra_iiif3_information_response_keys(options = {})
     {}
   end
 
@@ -282,6 +369,7 @@ class CustomDelegate
   # Source image metadata is available in the `metadata` context key, and has
   # the following structure:
   #
+  # ```
   # {
   #     "exif": {
   #         "tagSet": "Baseline TIFF",
@@ -307,6 +395,7 @@ class CustomDelegate
   #         # structure varies
   #     }
   # }
+  # ```
   #
   # * The `exif` key refers to embedded EXIF data. This also includes IFD0
   #   metadata from source TIFFs, whether or not an EXIF IFD is present.
@@ -328,7 +417,6 @@ class CustomDelegate
   #                            embed anything.
   #
   def metadata(options = {})
-    nil
   end
 
 end

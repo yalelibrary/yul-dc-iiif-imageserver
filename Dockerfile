@@ -1,6 +1,6 @@
 FROM openjdk:11
 
-ENV CANTALOUPE_VERSION=4.1.11
+ENV CANTALOUPE_VERSION=5.0.6
 ENV JRUBY_VERSION=9.3.0.0
 
 EXPOSE 8182
@@ -25,7 +25,7 @@ ENV PATH="/jruby/bin:${PATH}"
 # Run non privileged
 RUN adduser --system cantaloupe
 ADD https://github.com/cantaloupe-project/cantaloupe/releases/download/v${CANTALOUPE_VERSION}/cantaloupe-${CANTALOUPE_VERSION}.zip /cantaloupe/cantaloupe.zip
-RUN /bin/sh -c 'unzip -j /cantaloupe/cantaloupe.zip cantaloupe-${CANTALOUPE_VERSION}/cantaloupe-${CANTALOUPE_VERSION}.war -d /cantaloupe'
+RUN /bin/sh -c 'unzip -j /cantaloupe/cantaloupe.zip cantaloupe-${CANTALOUPE_VERSION}/cantaloupe-${CANTALOUPE_VERSION}.jar -d /cantaloupe'
 RUN /bin/sh -c 'rm -f /cantaloupe/cantaloupe.zip'
 RUN gem install --no-doc honeybadger
 COPY delegates.rb cantaloupe

@@ -3,7 +3,9 @@ FROM openjdk:11
 ENV CANTALOUPE_VERSION=5.0.6
 ENV JRUBY_VERSION=9.3.0.0
 
+# remove expose and healthcheck for 8182 post migration
 EXPOSE 8182
+EXPOSE 8183
 
 VOLUME /imageroot
 
@@ -40,4 +42,5 @@ WORKDIR /cantaloupe
 USER root
 COPY ops/boot.sh /boot.sh
 HEALTHCHECK CMD curl --fail http://localhost:8182/ || exit 1
+HEALTHCHECK CMD curl --fail https://localhost:8183/ || exit 1
 CMD ["/boot.sh"]

@@ -1,4 +1,4 @@
-FROM openjdk:11
+FROM amazoncorretto:11-alpine
 
 ENV CANTALOUPE_VERSION=5.0.6
 ENV JRUBY_VERSION=9.3.0.0
@@ -8,13 +8,12 @@ EXPOSE 8182
 VOLUME /imageroot
 
 # Fix Java DNS TTL
-RUN echo "\nnetworkaddress.cache.ttl=120" >> /usr/local/openjdk-11/conf/security/java.security
+RUN echo "\nnetworkaddress.cache.ttl=120" >> /usr/lib/jvm/default-jvm/conf/security/java.security
 
 # Update packages and install tools
-RUN apt-get -qq update -y && \
-    apt-get -qq install -y --no-install-recommends curl imagemagick \
-    libopenjp2-tools ffmpeg unzip default-jre-headless vim && \
-    apt-get -qqy autoremove && apt-get -qqy autoclean
+RUN apk update && \
+    apk add --no-cache bash curl imagemagick ffmpeg openjpeg-tools unzip vim && \
+    rm -rf /var/cache/apk/*
 RUN mkdir /cantaloupe_temp
 
 RUN curl https://repo1.maven.org/maven2/org/jruby/jruby-dist/${JRUBY_VERSION}/jruby-dist-${JRUBY_VERSION}-bin.tar.gz > jruby.tgz && tar -xvzf jruby.tgz && rm jruby.tgz
@@ -34,6 +33,9 @@ COPY cantaloupe.properties cantaloupe
 RUN mkdir -p /var/log/cantaloupe /var/cache/cantaloupe \
     && chown -R cantaloupe /cantaloupe /var/log/cantaloupe /var/cache/cantaloupe 
 ENV GEM_HOME=/jruby/lib/ruby/gems/shared:$GEM_HOME
+
+# Disable deprecated library
+ENV JAVA_TOOL_OPTIONS="-Dcom.sun.media.jai.disableMediaLib=true"
 
 USER cantaloupe
 WORKDIR /cantaloupe

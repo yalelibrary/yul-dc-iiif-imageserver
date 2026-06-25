@@ -44,5 +44,4 @@ WORKDIR /cantaloupe
 USER root
 COPY ops/boot.sh /boot.sh
 HEALTHCHECK CMD curl --fail http://localhost:8182/ || exit 1
-HEALTHCHECK CMD curl --fail https://localhost:8183/ || exit 1
 CMD ["/boot.sh"]

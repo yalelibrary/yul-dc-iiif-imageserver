@@ -12,10 +12,6 @@ require_env() {
 # Expect these to come from ECS task secrets/environment.
 require_env IIIF_IMAGE_KEYSTORE
 
-if [[ -z "${HTTPS_KEY_STORE_PASSWORD:-}" ]]; then
-  HTTPS_KEY_STORE_PASSWORD="$("${IIIF_IMAGE_KEYSTORE}" "HTTPS_KEY_STORE_PASSWORD")"
-fi
-
 require_env HTTPS_KEY_STORE_PASSWORD
 require_env HTTPS_KEY_PASSWORD
 
@@ -28,7 +24,7 @@ mkdir -p "$(dirname "${HTTPS_KEY_STORE_PATH}")"
 
 # Decode keystore from secret into file with restrictive permissions.
 umask 077
-KEYSTORE_B64="$("${IIIF_IMAGE_KEYSTORE}" "KEYSTORE_B64")"
+KEYSTORE_B64="${IIIF_IMAGE_KEYSTORE}"
 printf '%s' "${KEYSTORE_B64}" | tr -d '\r\n' | base64 -d > "${HTTPS_KEY_STORE_PATH}"
 
 # Ensure the runtime user can read it.

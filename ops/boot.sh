@@ -11,7 +11,6 @@ require_env() {
 
 # Expect these to come from ECS task secrets/environment.
 require_env IIIF_IMAGE_KEYSTORE
-
 require_env HTTPS_KEY_STORE_PASSWORD
 require_env HTTPS_KEY_PASSWORD
 
@@ -35,7 +34,8 @@ chmod 400 "${HTTPS_KEY_STORE_PATH}"
 keytool -list \
   -storetype "${HTTPS_KEY_STORE_TYPE}" \
   -keystore "${HTTPS_KEY_STORE_PATH}" \
-  -storepass "${HTTPS_KEY_STORE_PASSWORD}" >/dev/null
+  -storepass "${HTTPS_KEY_STORE_PASSWORD}" 2>&1
 
 # Start Cantaloupe
+echo "launching Cantaloupe" >&2
 exec su cantaloupe -s /bin/sh /bin/sh -c "GEM_PATH=/jruby/lib/ruby/gems/shared java -Dcantaloupe.config=/cantaloupe/cantaloupe.properties ${IIIF_JAVA_OPTS:-} -jar /cantaloupe/cantaloupe-${CANTALOUPE_VERSION}.jar"

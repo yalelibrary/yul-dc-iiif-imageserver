@@ -3,7 +3,9 @@ FROM amazoncorretto:11-alpine
 ENV CANTALOUPE_VERSION=5.0.6
 ENV JRUBY_VERSION=9.3.0.0
 
+# remove expose and healthcheck for 8182 post migration
 EXPOSE 8182
+EXPOSE 8183
 
 VOLUME /imageroot
 
@@ -14,7 +16,6 @@ RUN echo "\nnetworkaddress.cache.ttl=120" >> /usr/lib/jvm/default-jvm/conf/secur
 RUN apk update && \
     apk add --no-cache bash curl imagemagick ffmpeg openjpeg-tools unzip vim && \
     rm -rf /var/cache/apk/*
-RUN mkdir /cantaloupe_temp
 
 RUN curl https://repo1.maven.org/maven2/org/jruby/jruby-dist/${JRUBY_VERSION}/jruby-dist-${JRUBY_VERSION}-bin.tar.gz > jruby.tgz && tar -xvzf jruby.tgz && rm jruby.tgz
 
@@ -30,8 +31,8 @@ RUN gem install --no-doc honeybadger
 COPY delegates.rb cantaloupe
 COPY cantaloupe.properties cantaloupe
 
-RUN mkdir -p /var/log/cantaloupe /var/cache/cantaloupe \
-    && chown -R cantaloupe /cantaloupe /var/log/cantaloupe /var/cache/cantaloupe 
+RUN mkdir -p /var/log/cantaloupe /var/cache/cantaloupe /cantaloupe_temp \
+    && chown -R cantaloupe /cantaloupe /var/log/cantaloupe /var/cache/cantaloupe /cantaloupe_temp
 ENV GEM_HOME=/jruby/lib/ruby/gems/shared:$GEM_HOME
 
 # Disable deprecated library

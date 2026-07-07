@@ -95,6 +95,14 @@ OID `123456` results in `/ptiffs/56/12/34/56/123456.tif`
 
 Assumes images are TIFF and end with the `.tif` extension.
 
+## HTTPS
+
+To run the container locally with HTTPS enabled an engineer needs to generate a keystore, store it, and pass env vars when bringing up the container like so:
+
+```
+HTTPS_KEY_STORE_PATH=/cantaloupe-local.p12 HTTPS_KEY_STORE_PASSWORD=notarealpassword HTTPS_KEY_PASSWORD=notarealpassword cam up iiif_image
+```
+
 # License
 
 Cantaloupe is open-source software distributed under the University of Illinois/NCSA Open Source License; see the file LICENSE.txt for terms.

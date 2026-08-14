@@ -1,3 +1,3 @@
-source 'https://rubygems.org', cooldown: 14
+source 'https://rubygems.org', cooldown: 30
 
 gem 'honeybadger', '~> 4.0'

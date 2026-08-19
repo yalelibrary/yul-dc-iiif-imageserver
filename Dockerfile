@@ -20,7 +20,7 @@ RUN apk update && \
 RUN curl https://repo1.maven.org/maven2/org/jruby/jruby-dist/${JRUBY_VERSION}/jruby-dist-${JRUBY_VERSION}-bin.tar.gz > jruby.tgz && tar -xvzf jruby.tgz && rm jruby.tgz
 
 RUN ln -s /jruby-${JRUBY_VERSION} /jruby
-ENV PATH="/jruby/ruby/gems/shared/gems/bundler-2.2.14/exe:${PATH}"
+ENV PATH="/jruby/ruby/gems/shared/gems/bundler-4.0.13/exe:${PATH}"
 ENV PATH="/jruby/bin:${PATH}"
 # Run non privileged
 RUN adduser --system cantaloupe
